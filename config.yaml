@@ -1,0 +1,9 @@
+trainingdata: "data/raw/training_set"
+testingdata: "data/raw/test_set/"
+dataprocesseddirectory: "data/processed/"
+modelpath: "models/"
+resultsrawpath: "results/results_raw.p"
+resultsevaluatedpath: "results/results_evaluate.p"
+figuredirectory: "results/figures/"
+
+model: "RandomForest"
