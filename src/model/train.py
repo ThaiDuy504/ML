@@ -18,7 +18,7 @@ def train(config):
     
     # Train the model
     print("trainnning....")
-    Model = model.Model("RandomForest")
+    Model = model.Model(config['model'])
     Model.train(X,y)
 
     # Save the trained model
