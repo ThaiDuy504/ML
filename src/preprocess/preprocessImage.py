@@ -13,7 +13,7 @@ def preprocessImg(img):
     img_gray = rgb2gray(img_resized)
     img_flat = img_gray.flatten()
     img_flat = np.array(img_flat)
-    return img_resized, img_flat
+    return img_gray, img_flat
 
 def preprocess(data):
     config = tools.load_config()

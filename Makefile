@@ -1,5 +1,7 @@
 all: train predict evaluate visualization
 
+preprocess:
+	python -m src.preprocess.preprocessImage
 train:
 	python -m src.model.train
 predict:
