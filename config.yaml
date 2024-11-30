@@ -4,6 +4,6 @@ dataprocesseddirectory: "data/processed/"
 modelpath: "models/"
 resultsrawpath: "results/results_raw.p"
 resultsevaluatedpath: "results/results_evaluate.p"
-figuredirectory: "results/figures/"
+figuredirectory: "reports/figures/"
 
 model: "RandomForest"
