@@ -1,4 +1,4 @@
-all: train predict evaluate
+all: train predict evaluate visualization
 
 train:
 	python -m src.model.train

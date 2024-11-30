@@ -6,4 +6,4 @@ resultsrawpath: "results/results_raw.p"
 resultsevaluatedpath: "results/results_evaluate.p"
 figuredirectory: "reports/figures/"
 
-model: "RandomForest"
+model: "MLP"

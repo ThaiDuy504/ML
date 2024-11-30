@@ -1,7 +1,89 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
+# MLP model
+from sklearn.neural_network import MLPClassifier
+# KNN model
+from sklearn.neighbors import KNeighborsClassifier
+# Decision Tree model
+from sklearn.tree import DecisionTreeClassifier
+# Logistic Regression model
+from sklearn.linear_model import LogisticRegression
 
+class LogisticRegressionModel:
+    def __init__(self):
+        self.model = None
+        self.initialize()
+    
+    def initialize(self):
+        self.model = LogisticRegression()
+    
+    def train(self,X,y):
+        self.model.fit(X,y)
+    
+    def predict_proba(self,X):
+        return self.model.predict_proba(X), self.model.classes_
+
+    def predict(self,X):
+        return self.model.predict(X), self.model.classes_
+    
+class DecisionTreeModel:
+    def __init__(self):
+        self.model = None
+        self.initialize()
+    
+    def initialize(self):
+        self.model = DecisionTreeClassifier()
+    
+    def train(self,X,y):
+        self.model.fit(X,y)
+    
+    def predict_proba(self,X):
+        return self.model.predict_proba(X), self.model.classes_
+
+    def predict(self,X):
+        return self.model.predict(X), self.model.classes_
+
+
+class KNNModel:
+    def __init__(self):
+        self.tuned_parameters = [{'n_neighbors': [2, 3, 5, 7, 11, 19], 'weights': ['uniform', 'distance'], 'metric': ['euclidean', 'manhattan']}]
+        self.cv = None
+        self.model = None
+        self.initialize()
+    
+    def initialize(self):
+        self.cv = GridSearchCV(KNeighborsClassifier(), self.tuned_parameters, refit=True,verbose=3)
+
+    def train(self,x_train,y_train):
+        self.cv.fit(x_train,y_train)
+        self.model = self.cv.best_estimator_
+
+    def predict_proba(self,X):
+        return self.model.predict_proba(X), self.model.classes
+    
+    def predict(self,X):
+        return self.model.predict(X)
+    
+class MLPModel:
+    def __init__(self):
+        self.tuned_parameters = [{'hidden_layer_sizes': [(50,50,50), (50,100,50), (100,)], 'activation': ['tanh', 'relu'],'solver': ['sgd', 'adam'],'alpha': [0.0001, 0.05],'learning_rate': ['constant','adaptive']}]
+        self.cv = None
+        self.model = None
+        self.initialize()
+    
+    def initialize(self):
+        self.cv = GridSearchCV(MLPClassifier(), self.tuned_parameters, refit=True,verbose=3)
+
+    def train(self,x_train,y_train):
+        self.cv.fit(x_train,y_train)
+        self.model = self.cv.best_estimator_
+
+    def predict_proba(self,X):
+        return self.model.predict_proba(X), self.model.classes
+    
+    def predict(self,X):
+        return self.model.predict(X)
 
 class SVCModel:
     def __init__(self):
@@ -56,6 +138,15 @@ class Model:
                 self.model = SVCModel()
             case "RandomForest":
                 self.model = RandomForestModel()
+            case "LogisticRegression":
+                self.model = LogisticRegressionModel()
+            case "DecisionTree":
+                self.model = DecisionTreeModel()
+            case "KNN":
+                self.model = KNNModel()
+            case "MLP":
+                self.model = MLPModel()
+        
     
     def train(self,X,y):
         self.model.train(X,y)
