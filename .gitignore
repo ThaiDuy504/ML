@@ -91,4 +91,4 @@ target/
 
 # Other
 .vscode/
-data/processed
+data/processed/*
