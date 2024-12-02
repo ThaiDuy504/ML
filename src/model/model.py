@@ -25,7 +25,7 @@ class StackedModel:
         self.model.fit(x_train,y_train)
 
     def predict_proba(self,X):
-        return self.model.predict_proba(X), self.model.classes
+        return self.model.predict_proba(X), self.model.classes_
     
     def predict(self,X):
         return self.model.predict(X), self.model.classes_
@@ -80,7 +80,7 @@ class KNNModel:
         self.model = self.cv.best_estimator_
 
     def predict_proba(self,X):
-        return self.model.predict_proba(X), self.model.classes
+        return self.model.predict_proba(X), self.model.classes_
     
     def predict(self,X):
         return self.model.predict(X), self.model.classes_
@@ -99,7 +99,7 @@ class MLPModel:
         self.model.fit(x_train,y_train)
 
     def predict_proba(self,X):
-        return self.model.predict_proba(X), self.model.classes
+        return self.model.predict_proba(X), self.model.classes_
     
     def predict(self,X):
         return self.model.predict(X), self.model.classes_
@@ -119,7 +119,7 @@ class SVCModel:
         self.model = self.cv.best_estimator_
 
     def predict_proba(self,X):
-        return self.model.predict_proba(X), self.model.classes
+        return self.model.predict_proba(X), self.model.classes_
     
     def predict(self,X):
         return self.model.predict(X), self.model.classes_
