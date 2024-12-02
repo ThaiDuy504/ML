@@ -10,6 +10,26 @@ from sklearn.tree import DecisionTreeClassifier
 # Logistic Regression model
 from sklearn.linear_model import LogisticRegression
 
+#stacked model random forest, decision tree, knn, mlp, svc
+from sklearn.ensemble import StackingClassifier
+
+class StackedModel:
+    def __init__(self):
+        self.model = None
+        self.initialize()
+    
+    def initialize(self):
+        self.model = StackingClassifier(estimators=[('rf', RandomForestClassifier()), ('dt', DecisionTreeClassifier()), ('knn', KNeighborsClassifier()), ('mlp', MLPClassifier()), ('svc', SVC())], final_estimator=LogisticRegression())
+    
+    def train(self,x_train,y_train):
+        self.model.fit(x_train,y_train)
+
+    def predict_proba(self,X):
+        return self.model.predict_proba(X), self.model.classes
+    
+    def predict(self,X):
+        return self.model.predict(X), self.model.classes_
+
 class LogisticRegressionModel:
     def __init__(self):
         self.model = None
@@ -73,7 +93,7 @@ class MLPModel:
         self.initialize()
     
     def initialize(self):
-        self.model = MLPClassifier(hidden_layer_sizes=(1024,512,256,128,), max_iter=1000,activation='tanh',solver='adam',random_state=42,early_stopping=True,learning_rate='adaptive',alpha=0.001)
+        self.model = MLPClassifier(hidden_layer_sizes=(512,256,128,), max_iter=1000,activation='tanh',solver='sgd',random_state=42,early_stopping=True,learning_rate='adaptive',alpha=0.0001)
 
     def train(self,x_train,y_train):
         self.model.fit(x_train,y_train)
@@ -145,6 +165,8 @@ class Model:
                 self.model = KNNModel()
             case "MLP":
                 self.model = MLPModel()
+            case "Stacked":
+                self.model = StackedModel()
         
     
     def train(self,X,y):

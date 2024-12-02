@@ -43,7 +43,7 @@ def predict(config):
     
     # Save results to a convenient data structure
     Result = evaluate.Results(y,y_hat,classes)
-    resultspath = config["resultsrawpath"]
+    resultspath = config["resultsrawpath"] + config["model"] + ".p"
     tools.pickle_dump(resultspath,Result)
 
 if __name__ == "__main__":

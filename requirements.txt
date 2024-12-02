@@ -6,3 +6,4 @@ pandas
 pyyaml
 scikit-learn
 scikit-image
+scikit-learn-intelex

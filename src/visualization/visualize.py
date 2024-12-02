@@ -21,7 +21,7 @@ def visualize_results(Results,outfolder):
 if __name__ == "__main__":
     # Load the results
     config = tools.load_config()
-    resultspath = config["resultsevaluatedpath"]
+    resultspath = config["resultsevaluatedpath"] + config["model"] + ".p"
     Results = tools.pickle_load(resultspath)
     
     # Produce and save the figure

@@ -23,7 +23,7 @@ if __name__ == "__main__":
     config = tools.load_config()
     
     # Load results
-    resultspath = config["resultsrawpath"]
+    resultspath = config["resultsrawpath"] + config["model"] + ".p"
     Results = tools.pickle_load(resultspath)
     
     # Calculate metrics
@@ -31,6 +31,6 @@ if __name__ == "__main__":
     Results.print_metrics()
     
     # Save metrics
-    validationpath = config["resultsevaluatedpath"]
+    validationpath = config["resultsevaluatedpath"] + config["model"] + ".p"
     tools.pickle_dump(validationpath, Results)
     

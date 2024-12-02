@@ -2,9 +2,9 @@ trainingdata: "data/raw/training_set"
 testingdata: "data/raw/test_set/"
 dataprocesseddirectory: "data/processed/"
 modelpath: "models/"
-model: "MLP"
+model: "LogisticRegression"
 
-resultsrawpath: "results/results_raw_{{model}}.p"
-resultsevaluatedpath: "results/results_evaluate_{{model}}.p"
+resultsrawpath: "results/results_raw_"
+resultsevaluatedpath: "results/results_evaluate_"
 
 figuredirectory: "reports/figures/"
