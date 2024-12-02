@@ -93,3 +93,4 @@ target/
 .vscode/
 data/processed/trainingdata.csv
 data/processed/testingdata.csv
+models/*
