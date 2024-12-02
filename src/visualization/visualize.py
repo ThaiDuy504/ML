@@ -26,5 +26,5 @@ if __name__ == "__main__":
     
     # Produce and save the figure
     figuredirectory = config["figuredirectory"]
-    visualize_results(Results, figuredirectory)
+    visualize_results(Results, figuredirectory + f"{config["model"]}_")
     

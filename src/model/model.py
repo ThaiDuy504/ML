@@ -63,27 +63,26 @@ class KNNModel:
         return self.model.predict_proba(X), self.model.classes
     
     def predict(self,X):
-        return self.model.predict(X)
+        return self.model.predict(X), self.model.classes_
     
 class MLPModel:
     def __init__(self):
-        self.tuned_parameters = [{'hidden_layer_sizes': [(50,50,50), (50,100,50), (100,)], 'activation': ['tanh', 'relu'],'solver': ['sgd', 'adam'],'alpha': [0.0001, 0.05],'learning_rate': ['constant','adaptive']}]
+        # self.tuned_parameters = [{'hidden_layer_sizes': [(50,50,50), (50,100,50), (100,)], 'activation': ['tanh', 'relu'],'solver': ['sgd', 'adam'],'alpha': [0.0001, 0.05],'learning_rate': ['constant','adaptive']}]
         self.cv = None
         self.model = None
         self.initialize()
     
     def initialize(self):
-        self.cv = GridSearchCV(MLPClassifier(), self.tuned_parameters, refit=True,verbose=3)
+        self.model = MLPClassifier(hidden_layer_sizes=(1024,512,256,128,), max_iter=1000,activation='tanh',solver='adam',random_state=42,early_stopping=True,learning_rate='adaptive',alpha=0.001)
 
     def train(self,x_train,y_train):
-        self.cv.fit(x_train,y_train)
-        self.model = self.cv.best_estimator_
+        self.model.fit(x_train,y_train)
 
     def predict_proba(self,X):
         return self.model.predict_proba(X), self.model.classes
     
     def predict(self,X):
-        return self.model.predict(X)
+        return self.model.predict(X), self.model.classes_
 
 class SVCModel:
     def __init__(self):
@@ -103,7 +102,7 @@ class SVCModel:
         return self.model.predict_proba(X), self.model.classes
     
     def predict(self,X):
-        return self.model.predict(X)
+        return self.model.predict(X), self.model.classes_
 
 class RandomForestModel:
     def __init__(self):
@@ -156,5 +155,5 @@ class Model:
         return [prediction, classes]
 
     def predict(self,X):
-        prediction,classes = self.model.predict(X)
+        prediction,classes = self.model.predict(X) 
         return [prediction, classes]

@@ -91,4 +91,5 @@ target/
 
 # Other
 .vscode/
-data/processed/*
+data/processed/trainingdata.csv
+data/processed/testingdata.csv
