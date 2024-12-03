@@ -8,9 +8,11 @@ def train(config):
     # Load the data
     filepath = config["dataprocesseddirectory"] + "trainingdata.csv"
 
-    # print("loading data....")
-    # if(not os.path.exists(filepath)):
-    df, _, = preprocessImage.preprocess("trainingdata")
+    print("loading data....")
+    if(not os.path.exists(filepath)):
+        df, _, = preprocessImage.preprocess("trainingdata")
+    else:
+        df = dataio.load(filepath)
 
     X = df.iloc[:,:-1]
     y = df.iloc[:,-1]
