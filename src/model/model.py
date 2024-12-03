@@ -63,7 +63,7 @@ class LogisticRegressionModel:
         self.initialize()
     
     def initialize(self):
-        self.model = LogisticRegression()
+        self.model = LogisticRegression(max_iter=1000,random_state=42,verbose=3)
     
     def train(self,X,y):
         self.model.fit(X,y)
