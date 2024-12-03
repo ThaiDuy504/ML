@@ -2,6 +2,7 @@ trainingdata: "data/raw/training_set"
 testingdata: "data/raw/test_set/"
 dataprocesseddirectory: "data/processed/"
 modelpath: "models/"
+
 model: "MLP"
 
 resultsrawpath: "results/results_raw_"

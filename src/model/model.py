@@ -1,3 +1,4 @@
+import os
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
@@ -9,9 +10,35 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 # Logistic Regression model
 from sklearn.linear_model import LogisticRegression
-
 #stacked model random forest, decision tree, knn, mlp, svc
 from sklearn.ensemble import StackingClassifier
+#voting model
+from sklearn.ensemble import VotingClassifier
+import src.common.tools as tools
+
+MODEL_LIST = ["SVC","RandomForest","LogisticRegression","DecisionTree","KNN","MLP","Stacked","Vote"]
+
+class VotingModel:
+    def __init__(self):
+        self.model = None
+        self.initialize()
+    def initialize(self):
+        self.knn = tools.pickle_load("models/KNN.p") if os.path.exists("models/KNN.p") else KNeighborsClassifier()
+        self.randomforest = tools.pickle_load("models/RandomForest.p") if os.path.exists("models/RandomForest.p") else RandomForestClassifier()
+        self.logisticregression = tools.pickle_load("models/LogisticRegression.p") if os.path.exists("models/LogisticRegression.p") else LogisticRegression()
+        self.decisiontree = tools.pickle_load("models/DecisionTree.p") if os.path.exists("models/DecisionTree.p") else DecisionTreeClassifier()
+        self.mlp = tools.pickle_load("models/MLP.p") if os.path.exists("models/MLP.p") else MLPClassifier()
+        self.svc = tools.pickle_load("models/SVC.p") if os.path.exists("models/SVC.p") else SVC()
+        self.model = VotingClassifier(estimators=[('rf', self.randomforest), ('dt', self.decisiontree), ('knn', self.knn), ('mlp', self.mlp), ('svc', self.svc)], voting='soft')
+    
+    def train(self,x_train,y_train):
+        self.model.fit(x_train,y_train)
+
+    def predict_proba(self,X):
+        return self.model.predict_proba(X), self.model.classes_
+    def predict(self,X):
+        return self.model.predict(X), self.model.classes_
+
 
 class StackedModel:
     def __init__(self):
@@ -167,6 +194,8 @@ class Model:
                 self.model = MLPModel()
             case "Stacked":
                 self.model = StackedModel()
+            case "Vote":
+                self.model = VotingModel()
         
     
     def train(self,X,y):

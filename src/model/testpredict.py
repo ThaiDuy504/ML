@@ -15,18 +15,17 @@ def preprocess_image(image):
     return preprocessImage.preprocessImg(image)
 
 #predict 1 image
-def predict_image(image):
+def predict_image(image,model):
     config = tools.load_config()
-    modelpath = config["modelpath"] + config["model"] + ".p"
+    modelpath = config["modelpath"] + model + ".p"
+    print(modelpath)
+    # assert(os.path.exists(modelpath))
     Model = tools.pickle_load(modelpath)
-    [y_hat, classes] = Model.predict_proba([image])
+    [y_hat, classes] = Model.predict([image])
     return y_hat, classes
 
-
-if __name__ == "__main__":
+def predict(image_path,model):
     img = load_image("data/raw/test_set/dogs/dog.4003.jpg")
     img_resized, img_flat = preprocess_image(img)
-    y_hat, classes = predict_image(img_flat)
-    print(y_hat, classes)
-    plt.imshow(img_resized)
-    plt.show()
+    y_hat, classes = predict_image(img_flat,model)
+    return y_hat, classes
