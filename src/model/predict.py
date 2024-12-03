@@ -28,9 +28,8 @@ def predict(config):
     # Load the data to make predictions on
     # filepath = config["dataprocesseddirectory"] + "testingdata.csv"
     # if(not os.path.exists(filepath)):
-    flat_data,target,_ = preprocessImage.preprocess("testingdata")
+    df,_ = preprocessImage.preprocess("testingdata")
 
-    df = dataio.to_dataframe(flat_data,target)
     X = df.iloc[:,:-1]
     y = df.iloc[:,-1]
     

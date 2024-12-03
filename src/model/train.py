@@ -10,9 +10,8 @@ def train(config):
 
     # print("loading data....")
     # if(not os.path.exists(filepath)):
-    flatdata,target, _, = preprocessImage.preprocess("trainingdata")
+    df, _, = preprocessImage.preprocess("trainingdata")
 
-    df = dataio.to_dataframe(flatdata,target)
     X = df.iloc[:,:-1]
     y = df.iloc[:,-1]
     

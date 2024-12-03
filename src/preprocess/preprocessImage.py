@@ -15,6 +15,7 @@ def preprocessImg(img):
     return img_resized, img_flat
 
 def preprocess(data):
+    print("Preprocessing data..")
     config = tools.load_config()
 
     target = []
@@ -48,8 +49,8 @@ def preprocess(data):
     # with open(config["dataprocesseddirectory"] + data + ".txt", "w") as f:
     #     np.savetxt(f, flat_data, delimiter=",")
     # dataio.save(flat_data, target, config["dataprocesseddirectory"] + data + ".csv")
-
-    return flat_data, target, images
+    df = dataio.to_dataframe(flat_data,target)
+    return df, images
 
 if __name__ == "__main__":
     flat_data, target, images = preprocess("testingdata")
