@@ -29,7 +29,7 @@ class VotingModel:
         self.decisiontree = tools.pickle_load("models/DecisionTree.p") if os.path.exists("models/DecisionTree.p") else DecisionTreeClassifier()
         self.mlp = tools.pickle_load("models/MLP.p") if os.path.exists("models/MLP.p") else MLPClassifier()
         self.svc = tools.pickle_load("models/SVC.p") if os.path.exists("models/SVC.p") else SVC()
-        self.model = VotingClassifier(estimators=[('rf', self.randomforest), ('dt', self.decisiontree), ('knn', self.knn), ('mlp', self.mlp), ('svc', self.svc)], voting='soft')
+        self.model = VotingClassifier(estimators=[('rf', self.randomforest), ('dt', self.decisiontree), ('knn', self.knn), ('mlp', self.mlp), ('svc', self.svc)], voting='soft',verbose=3)
     
     def train(self,x_train,y_train):
         self.model.fit(x_train,y_train)
@@ -46,7 +46,7 @@ class StackedModel:
         self.initialize()
     
     def initialize(self):
-        self.model = StackingClassifier(estimators=[('rf', RandomForestClassifier()), ('dt', DecisionTreeClassifier()), ('knn', KNeighborsClassifier()), ('mlp', MLPClassifier()), ('svc', SVC())], final_estimator=LogisticRegression())
+        self.model = StackingClassifier(estimators=[('rf', RandomForestClassifier()), ('dt', DecisionTreeClassifier()), ('knn', KNeighborsClassifier()), ('mlp', MLPClassifier()), ('svc', SVC())], final_estimator=LogisticRegression(),verbose= 33)
     
     def train(self,x_train,y_train):
         self.model.fit(x_train,y_train)
@@ -120,7 +120,7 @@ class MLPModel:
         self.initialize()
     
     def initialize(self):
-        self.model = MLPClassifier(hidden_layer_sizes=(512,256,128,), max_iter=1000,activation='tanh',solver='sgd',random_state=42,early_stopping=True,learning_rate='adaptive',alpha=0.0001)
+        self.model = MLPClassifier(hidden_layer_sizes=(512,256,128,), max_iter=1000,activation='tanh',solver='sgd',random_state=42,early_stopping=True,learning_rate='adaptive',alpha=0.0001,verbose=True)
 
     def train(self,x_train,y_train):
         self.model.fit(x_train,y_train)
