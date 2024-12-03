@@ -3,7 +3,7 @@ testingdata: "data/raw/test_set/"
 dataprocesseddirectory: "data/processed/"
 modelpath: "models/"
 
-model: "RandomForest"
+model: "LogisticRegression"
 
 resultsrawpath: "results/results_raw_"
 resultsevaluatedpath: "results/results_evaluate_"

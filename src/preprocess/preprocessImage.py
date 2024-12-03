@@ -48,7 +48,7 @@ def preprocess(data):
     #save processed data to csv file
     # with open(config["dataprocesseddirectory"] + data + ".txt", "w") as f:
     #     np.savetxt(f, flat_data, delimiter=",")
-    # dataio.save(flat_data, target, config["dataprocesseddirectory"] + data + ".csv")
+    dataio.save(flat_data, target, config["dataprocesseddirectory"] + data + ".csv")
     df = dataio.to_dataframe(flat_data,target)
     return df, images
 
