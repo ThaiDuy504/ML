@@ -18,8 +18,12 @@ async def predict(model, file: UploadFile = File(...)):
     image = imread("temp.jpg")
     [y_hat,classes] = testpredict.predict(image,model)
     prediction = np.argmax(y_hat)
-    os.remove("temp.jpg")
-    return {"prediction" : f"{classes[prediction]}","all_probability":f"{y_hat.__str__()}"}
+    os.remove("temp.jpg")   
+    animal_type = "Chó" if classes[prediction] == 1 else "Mèo"
+    return {
+        "Kết_quả": f"Đây là {animal_type}",
+        "chi_tiết_dự_đoán": f"{y_hat.__str__()}"
+    }
 
 if __name__ == "__main__":
     import uvicorn
