@@ -10,3 +10,5 @@ evaluate:
 	python -m src.evaluate.evaluate
 visualization:
 	python -m src.visualization.visualize
+api:
+	python -m src.api.api

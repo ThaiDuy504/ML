@@ -21,8 +21,8 @@ def predict_image(image,model):
     print(modelpath)
     # assert(os.path.exists(modelpath))
     Model = tools.pickle_load(modelpath)
-    [y_hat, classes] = Model.predict([image])
-    return y_hat, classes
+    [y_hat, classes] = Model.predict_proba([image])
+    return y_hat[0], classes
 
 def predict(image_path,model):
     img = load_image("data/raw/test_set/dogs/dog.4003.jpg")
