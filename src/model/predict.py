@@ -26,11 +26,11 @@ def draw_chart(y_true, y_pred, classes):
 
 def predict(config):
     # Load the data to make predictions on
-    filepath = config["dataprocesseddirectory"] + "testingdata.csv"
-    if(not os.path.exists(filepath)):
-        preprocessImage.preprocess("testingdata")
+    # filepath = config["dataprocesseddirectory"] + "testingdata.csv"
+    # if(not os.path.exists(filepath)):
+    flat_data,target,_ = preprocessImage.preprocess("testingdata")
 
-    df = dataio.load(filepath)
+    df = dataio.to_dataframe(flat_data,target)
     X = df.iloc[:,:-1]
     y = df.iloc[:,-1]
     

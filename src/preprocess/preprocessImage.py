@@ -45,13 +45,14 @@ def preprocess(data):
 
 
     #save processed data to csv file
-    np.tofile(config["dataprocesseddirectory"] + data + ".npy", flat_data)
-    dataio.save(flat_data, target, config["dataprocesseddirectory"] + data + ".csv")
+    # with open(config["dataprocesseddirectory"] + data + ".txt", "w") as f:
+    #     np.savetxt(f, flat_data, delimiter=",")
+    # dataio.save(flat_data, target, config["dataprocesseddirectory"] + data + ".csv")
 
     return flat_data, target, images
 
 if __name__ == "__main__":
-    flat_data, target, images = preprocess("trainingdatapath")
+    flat_data, target, images = preprocess("testingdata")
     print(flat_data.shape)
     print(target.shape)
     print(images.shape)
