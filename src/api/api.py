@@ -11,7 +11,7 @@ async def read_root():
     return {"message": "Hello World"}
 
 @app.post("/predict/")
-async def predict(file: UploadFile = File(...),model=model):
+async def predict(file: UploadFile = File(...),model="NONE"):
     with open("temp.jpg", "wb") as buffer:
         buffer.write(await file.read())
     image = imread("temp.jpg")
