@@ -24,8 +24,7 @@ def predict_image(image,model):
     [y_hat, classes] = Model.predict_proba([image])
     return y_hat[0], classes
 
-def predict(image_path,model):
-    img = load_image("data/raw/test_set/dogs/dog.4003.jpg")
-    img_resized, img_flat = preprocess_image(img)
+def predict(img,model):
+    _, img_flat = preprocess_image(img)
     y_hat, classes = predict_image(img_flat,model)
     return y_hat, classes

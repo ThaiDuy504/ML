@@ -10,10 +10,9 @@ from skimage.color import rgb2gray
 
 def preprocessImg(img):
     img_resized = resize(img,(150,150,3))
-    img_gray = rgb2gray(img_resized)
-    img_flat = img_gray.flatten()
+    img_flat = img_resized.flatten()
     img_flat = np.array(img_flat)
-    return img_gray, img_flat
+    return img_resized, img_flat
 
 def preprocess(data):
     config = tools.load_config()
@@ -46,6 +45,7 @@ def preprocess(data):
 
 
     #save processed data to csv file
+    np.tofile(config["dataprocesseddirectory"] + data + ".npy", flat_data)
     dataio.save(flat_data, target, config["dataprocesseddirectory"] + data + ".csv")
 
     return flat_data, target, images
