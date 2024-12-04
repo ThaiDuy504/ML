@@ -98,4 +98,3 @@ data/raw/*
 trainingdata.*
 testingdata.*
 models/*
-
