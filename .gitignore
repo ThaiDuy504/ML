@@ -95,7 +95,6 @@ trainingdata.csv
 testingdata.csv
 models/*
 data/raw/*
-=======
 trainingdata.*
 testingdata.*
 models/*
