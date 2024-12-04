@@ -5,7 +5,6 @@ import src.data.dataio as dataio
 from skimage.io import imread
 from skimage.transform import resize
 # from skimage.color import rgb2gray
-from numba import jit
 
 def preprocessImg(img):
     img_resized = resize(img,(150,150,3))

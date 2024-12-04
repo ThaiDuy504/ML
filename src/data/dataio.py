@@ -29,7 +29,7 @@ def reduce_mem_usage(df, verbose=True):
 
 def to_dataframe(X,y):
     df =  pd.DataFrame(np.concatenate((X,y[:, np.newaxis]),axis=1))
-    df.info(verbose=True)
+    print(f"data frame size: {df.memory_usage().sum() / 1024**2:.2f} MB")
     print("optimizing dataframe")
     df = reduce_mem_usage(df)
     print("done optimizing")

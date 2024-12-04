@@ -14,31 +14,30 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import StackingClassifier
 #voting model
 from sklearn.ensemble import VotingClassifier
-import src.common.tools as tools
-
+import src.data.dataio as dataio
 MODEL_LIST = ["SVC","RandomForest","LogisticRegression","DecisionTree","KNN","MLP","Stacked","Vote"]
 
-#!! bao tri
-# class VotingModel:
-#     def __init__(self):
-#         self.model = None
-#         self.initialize()
-#     def initialize(self):
-#         self.knn = tools.pickle_load("models/KNN.p") if os.path.exists("models/KNN.p") else KNeighborsClassifier()
-#         self.randomforest = tools.pickle_load("models/RandomForest.p") if os.path.exists("models/RandomForest.p") else RandomForestClassifier()
-#         self.logisticregression = tools.pickle_load("models/LogisticRegression.p") if os.path.exists("models/LogisticRegression.p") else LogisticRegression()
-#         self.decisiontree = tools.pickle_load("models/DecisionTree.p") if os.path.exists("models/DecisionTree.p") else DecisionTreeClassifier()
-#         self.mlp = tools.pickle_load("models/MLP.p") if os.path.exists("models/MLP.p") else MLPClassifier()
-#         self.svc = tools.pickle_load("models/SVC.p") if os.path.exists("models/SVC.p") else SVC()
-#         self.model = VotingClassifier(estimators=[('rf', self.randomforest), ('dt', self.decisiontree), ('knn', self.knn), ('mlp', self.mlp), ('svc', self.svc)], voting='soft',verbose=3)
+class VotingModel:
+    def __init__(self):
+        self.model = None
+        self.initialize()
+    def initialize(self):
+        #create a list of base models with the best hyperparameters
+        self.estimators = [('rf', RandomForestClassifier(n_estimators=1000,verbose=3,random_state=42)),
+                            ('knn', KNeighborsClassifier(n_neighbors=10000,weights='distance',metric='manhattan')),
+                            ('lr', LogisticRegression(max_iter=1000,random_state=42,verbose=3)),
+                            ('dt', DecisionTreeClassifier(max_features='sqrt')),
+                            # ('mlp', MLPClassifier(hidden_layer_sizes=(512,256,128,), max_iter=1000,activation='tanh',solver='sgd',random_state=42,early_stopping=True,learning_rate='adaptive',alpha=0.0001,verbose=True))
+                            ]
+        self.model = VotingClassifier(estimators=self.estimators, voting='soft',verbose=10)
     
-#     def train(self,x_train,y_train):
-#         self.model.fit(x_train,y_train)
+    def fit(self,x_train,y_train):
+        self.model.fit(x_train,y_train)
 
-#     def predict_proba(self,X):
-#         return self.model.predict_proba(X), self.model.classes_
-#     def predict(self,X):
-#         return self.model.predict(X), self.model.classes_
+    def predict_proba(self,X):
+        return self.model.predict_proba(X), self.model.classes_
+    def predict(self,X):
+        return self.model.predict(X), self.model.classes_
 
 
 class StackedModel:
@@ -50,12 +49,12 @@ class StackedModel:
         #create a list of base models with the best hyperparameters
         self.estimators = [('rf', RandomForestClassifier(n_estimators=1000,verbose=3,random_state=42)),
                            ('knn', KNeighborsClassifier(n_neighbors=5,weights='distance',metric='manhattan')),
-                           ('svc', SVC(kernel='rbf',gamma=0.001,C=1000)),
+                           ('dt', DecisionTreeClassifier(max_features='sqrt')),
                            ('lr', LogisticRegression(max_iter=1000,random_state=42,verbose=3)),
                            ]
-        self.model = StackingClassifier(estimators=self.estimators, final_estimator=DecisionTreeClassifier(),verbose=3)
+        self.model = StackingClassifier(estimators=self.estimators, final_estimator=DecisionTreeClassifier(max_features='sqrt'),verbose=10)
     
-    def train(self,x_train,y_train):
+    def fit(self,x_train,y_train):
         self.model.fit(x_train,y_train)
 
     def predict_proba(self,X):
@@ -72,7 +71,7 @@ class LogisticRegressionModel:
     def initialize(self):
         self.model = LogisticRegression(max_iter=1000,random_state=42,verbose=3)
     
-    def train(self,X,y):
+    def fit(self,X,y):
         self.model.fit(X,y)
     
     def predict_proba(self,X):
@@ -107,11 +106,10 @@ class KNNModel:
         self.initialize()
     
     def initialize(self):
-        self.cv = GridSearchCV(KNeighborsClassifier(), self.tuned_parameters, refit=True,verbose=3)
+        self.model = KNeighborsClassifier(n_neighbors=5000,weights='distance',metric='manhattan')
 
-    def train(self,x_train,y_train):
-        self.cv.fit(x_train,y_train)
-        self.model = self.cv.best_estimator_
+    def fit(self,x_train,y_train):
+        self.model.fit(x_train,y_train)
 
     def predict_proba(self,X):
         return self.model.predict_proba(X), self.model.classes_
@@ -129,7 +127,7 @@ class MLPModel:
     def initialize(self):
         self.model = MLPClassifier(hidden_layer_sizes=(512,256,128,), max_iter=1000,activation='tanh',solver='sgd',random_state=42,early_stopping=True,learning_rate='adaptive',alpha=0.0001,verbose=True)
 
-    def train(self,x_train,y_train):
+    def fit(self,x_train,y_train):
         self.model.fit(x_train,y_train)
 
     def predict_proba(self,X):
@@ -138,25 +136,26 @@ class MLPModel:
     def predict(self,X):
         return self.model.predict(X), self.model.classes_
 
-class SVCModel:
-    def __init__(self):
-        # self.tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4], 'C': [1, 10, 100, 1000]}]
-        # self.cv = None
-        self.model = None
-        self.initialize()
+# !! bao tri 
+# class SVCModel:
+#     def __init__(self):
+#         # self.tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4], 'C': [1, 10, 100, 1000]}]
+#         # self.cv = None
+#         self.model = None
+#         self.initialize()
     
-    def initialize(self):
-        self.model = SVC(kernel='sigmoid',gamma=0.001,C=256,probability=True,verbose=3)
+#     def initialize(self):
+#         self.model = SVC(kernel="linear",verbose=True,random_state=42,probability=True,C=2)
 
-    def train(self,x_train,y_train):
-        self.model.fit(x_train,y_train)
-        # self.model = self.cv.best_estimator_
+#     def fit(self,x_train,y_train):
+#         self.model.fit(x_train,y_train)
+#         # self.model = self.cv.best_estimator_
 
-    def predict_proba(self,X):
-        return self.model.predict_proba(X), self.model.classes_
+#     def predict_proba(self,X):
+#         return self.model.predict(X), self.model.classes_
     
-    def predict(self,X):
-        return self.model.predict(X), self.model.classes_
+#     def predict(self,X):
+#         return self.model.predict(X), self.model.classes_
 
 class RandomForestModel:
     def __init__(self):
@@ -164,9 +163,9 @@ class RandomForestModel:
         self.initialize()
     
     def initialize(self):
-        self.model = RandomForestClassifier(n_estimators=1000,verbover=3,random_state=42)
+        self.model = RandomForestClassifier(n_estimators=1000,verbose=10,random_state=42)
     
-    def train(self,X,y):
+    def fit(self,X,y):
         self.model.fit(X,y)
     
     def predict_proba(self,X):
@@ -182,13 +181,13 @@ class Model:
     # strictly needed for a Random Forest classifier, it shows an example
     # of how the class could be constructed if the model is bespoke)
     def __init__(self,type) -> None:
-        self.model = []
+        self.model = None
         self.initialize(type)
     
     def initialize(self,type):
         match type:
-            case "SVC":
-                self.model = SVCModel()
+            # case "SVC":
+                # self.model = SVCModel()
             case "RandomForest":
                 self.model = RandomForestModel()
             case "LogisticRegression":
@@ -201,12 +200,13 @@ class Model:
                 self.model = MLPModel()
             case "StackedEnsemble":
                 self.model = StackedModel()
-            # case "Vote":
-            #     self.model = VotingModel()
+            case "Vote":
+                self.model = VotingModel()
         
     
     def train(self,X,y):
-        self.model.train(X,y)
+        assert(self.model is not None)
+        self.model.fit(X,y)
         
     def predict_proba(self,X):
         prediction,classes = self.model.predict_proba(X)
