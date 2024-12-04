@@ -6,3 +6,5 @@ pandas
 pyyaml
 scikit-learn
 scikit-image
+fastapi
+uvicorn[standar]
