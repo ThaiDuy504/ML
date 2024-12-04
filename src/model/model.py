@@ -106,10 +106,11 @@ class KNNModel:
         self.initialize()
     
     def initialize(self):
-        self.model = KNeighborsClassifier(n_neighbors=5000,weights='distance',metric='manhattan')
+        self.cv = GridSearchCV(KNeighborsClassifier(), self.tuned_parameters, cv=5, verbose=3)
 
     def fit(self,x_train,y_train):
-        self.model.fit(x_train,y_train)
+        self.cv.fit(x_train,y_train)
+        self.model = self.cv.best_estimator_
 
     def predict_proba(self,X):
         return self.model.predict_proba(X), self.model.classes_
