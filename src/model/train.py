@@ -6,11 +6,11 @@ import src.preprocess.preprocessImage as preprocessImage
 
 def train(config):
     # Load the data
-    filepath = config["dataprocesseddirectory"] + "trainingdata.csv"
+    filepath = config["dataprocesseddirectory"] + "trainingdata.p"
 
     print("loading data....")
     if(not os.path.exists(filepath)):
-        df, _, = preprocessImage.preprocess("trainingdata")
+        df = preprocessImage.preprocess("trainingdata")
     else:
         df = dataio.load(filepath)
 

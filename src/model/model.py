@@ -18,26 +18,27 @@ import src.common.tools as tools
 
 MODEL_LIST = ["SVC","RandomForest","LogisticRegression","DecisionTree","KNN","MLP","Stacked","Vote"]
 
-class VotingModel:
-    def __init__(self):
-        self.model = None
-        self.initialize()
-    def initialize(self):
-        self.knn = tools.pickle_load("models/KNN.p") if os.path.exists("models/KNN.p") else KNeighborsClassifier()
-        self.randomforest = tools.pickle_load("models/RandomForest.p") if os.path.exists("models/RandomForest.p") else RandomForestClassifier()
-        self.logisticregression = tools.pickle_load("models/LogisticRegression.p") if os.path.exists("models/LogisticRegression.p") else LogisticRegression()
-        self.decisiontree = tools.pickle_load("models/DecisionTree.p") if os.path.exists("models/DecisionTree.p") else DecisionTreeClassifier()
-        self.mlp = tools.pickle_load("models/MLP.p") if os.path.exists("models/MLP.p") else MLPClassifier()
-        self.svc = tools.pickle_load("models/SVC.p") if os.path.exists("models/SVC.p") else SVC()
-        self.model = VotingClassifier(estimators=[('rf', self.randomforest), ('dt', self.decisiontree), ('knn', self.knn), ('mlp', self.mlp), ('svc', self.svc)], voting='soft',verbose=3)
+#!! bao tri
+# class VotingModel:
+#     def __init__(self):
+#         self.model = None
+#         self.initialize()
+#     def initialize(self):
+#         self.knn = tools.pickle_load("models/KNN.p") if os.path.exists("models/KNN.p") else KNeighborsClassifier()
+#         self.randomforest = tools.pickle_load("models/RandomForest.p") if os.path.exists("models/RandomForest.p") else RandomForestClassifier()
+#         self.logisticregression = tools.pickle_load("models/LogisticRegression.p") if os.path.exists("models/LogisticRegression.p") else LogisticRegression()
+#         self.decisiontree = tools.pickle_load("models/DecisionTree.p") if os.path.exists("models/DecisionTree.p") else DecisionTreeClassifier()
+#         self.mlp = tools.pickle_load("models/MLP.p") if os.path.exists("models/MLP.p") else MLPClassifier()
+#         self.svc = tools.pickle_load("models/SVC.p") if os.path.exists("models/SVC.p") else SVC()
+#         self.model = VotingClassifier(estimators=[('rf', self.randomforest), ('dt', self.decisiontree), ('knn', self.knn), ('mlp', self.mlp), ('svc', self.svc)], voting='soft',verbose=3)
     
-    def train(self,x_train,y_train):
-        self.model.fit(x_train,y_train)
+#     def train(self,x_train,y_train):
+#         self.model.fit(x_train,y_train)
 
-    def predict_proba(self,X):
-        return self.model.predict_proba(X), self.model.classes_
-    def predict(self,X):
-        return self.model.predict(X), self.model.classes_
+#     def predict_proba(self,X):
+#         return self.model.predict_proba(X), self.model.classes_
+#     def predict(self,X):
+#         return self.model.predict(X), self.model.classes_
 
 
 class StackedModel:
@@ -46,7 +47,13 @@ class StackedModel:
         self.initialize()
     
     def initialize(self):
-        self.model = StackingClassifier(estimators=[('rf', RandomForestClassifier()), ('dt', DecisionTreeClassifier()), ('knn', KNeighborsClassifier()), ('mlp', MLPClassifier()), ('svc', SVC())], final_estimator=LogisticRegression(),verbose= 33)
+        #create a list of base models with the best hyperparameters
+        self.estimators = [('rf', RandomForestClassifier(n_estimators=1000,verbose=3,random_state=42)),
+                           ('knn', KNeighborsClassifier(n_neighbors=5,weights='distance',metric='manhattan')),
+                           ('svc', SVC(kernel='rbf',gamma=0.001,C=1000)),
+                           ('lr', LogisticRegression(max_iter=1000,random_state=42,verbose=3)),
+                           ]
+        self.model = StackingClassifier(estimators=self.estimators, final_estimator=DecisionTreeClassifier(),verbose=3)
     
     def train(self,x_train,y_train):
         self.model.fit(x_train,y_train)
@@ -80,7 +87,7 @@ class DecisionTreeModel:
         self.initialize()
     
     def initialize(self):
-        self.model = DecisionTreeClassifier()
+        self.model = DecisionTreeClassifier(max_features='sqrt')
     
     def train(self,X,y):
         self.model.fit(X,y)
@@ -133,17 +140,17 @@ class MLPModel:
 
 class SVCModel:
     def __init__(self):
-        self.tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4], 'C': [1, 10, 100, 1000]}]
-        self.cv = None
+        # self.tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4], 'C': [1, 10, 100, 1000]}]
+        # self.cv = None
         self.model = None
         self.initialize()
     
     def initialize(self):
-        self.cv = GridSearchCV(SVC(), self.tuned_parameters, refit=True,verbose=3)
+        self.model = SVC(kernel='sigmoid',gamma=0.001,C=256,probability=True,verbose=3)
 
     def train(self,x_train,y_train):
-        self.cv.fit(x_train,y_train)
-        self.model = self.cv.best_estimator_
+        self.model.fit(x_train,y_train)
+        # self.model = self.cv.best_estimator_
 
     def predict_proba(self,X):
         return self.model.predict_proba(X), self.model.classes_
@@ -157,7 +164,7 @@ class RandomForestModel:
         self.initialize()
     
     def initialize(self):
-        self.model = RandomForestClassifier()
+        self.model = RandomForestClassifier(n_estimators=1000,verbover=3,random_state=42)
     
     def train(self,X,y):
         self.model.fit(X,y)
@@ -192,10 +199,10 @@ class Model:
                 self.model = KNNModel()
             case "MLP":
                 self.model = MLPModel()
-            case "Stacked":
+            case "StackedEnsemble":
                 self.model = StackedModel()
-            case "Vote":
-                self.model = VotingModel()
+            # case "Vote":
+            #     self.model = VotingModel()
         
     
     def train(self,X,y):

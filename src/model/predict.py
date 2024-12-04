@@ -26,9 +26,9 @@ def draw_chart(y_true, y_pred, classes):
 
 def predict(config):
     # Load the data to make predictions on
-    filepath = config["dataprocesseddirectory"] + "testingdata.csv"
+    filepath = config["dataprocesseddirectory"] + "testingdata.p"
     if(not os.path.exists(filepath)):
-        df,_ = preprocessImage.preprocess("testingdata")
+        df = preprocessImage.preprocess("testingdata")
     else:
         df = dataio.load(filepath)
 

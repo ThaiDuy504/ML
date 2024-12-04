@@ -91,7 +91,13 @@ target/
 
 # Other
 .vscode/
+<<<<<<< HEAD
 trainingdata.csv
 testingdata.csv
 models/*
 data/raw/*
+=======
+trainingdata.*
+testingdata.*
+models/*
+>>>>>>> 8d0f002721398787db1981e72518d73d8c749d5e

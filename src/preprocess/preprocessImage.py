@@ -1,12 +1,11 @@
 import src.common.tools as tools
 import os
-import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
 import src.data.dataio as dataio
 from skimage.io import imread
 from skimage.transform import resize
-from skimage.color import rgb2gray
+# from skimage.color import rgb2gray
+from numba import jit
 
 def preprocessImg(img):
     img_resized = resize(img,(150,150,3))
@@ -20,7 +19,7 @@ def preprocess(data):
 
     target = []
     flat_data = []
-    images = []
+    # images = []
     DataDirectory = config[data]
 
     Categories = ["cats","dogs"]
@@ -37,20 +36,20 @@ def preprocess(data):
             # Skimage normalizes the value of image
             img_resized, img_flat = preprocessImg(img_array)
             flat_data.append(img_flat)
-            images.append(img_resized)
+            # images.append(img_resized)
             target.append(target_class)
         # Convert list to numpy array format
     flat_data = np.array(flat_data)
-    images = np.array(images)
+    # images = np.array(images)
     target = np.array(target)
 
 
     #save processed data to csv file
-    # with open(config["dataprocesseddirectory"] + data + ".txt", "w") as f:
-    #     np.savetxt(f, flat_data, delimiter=",")
-    dataio.save(flat_data, target, config["dataprocesseddirectory"] + data + ".csv")
+    print("Saving processed data...")
     df = dataio.to_dataframe(flat_data,target)
-    return df, images
+    dataio.save(df, config["dataprocesseddirectory"] + data + ".p")
+    print("Data saved")
+    return df
 
 if __name__ == "__main__":
     flat_data, target, images = preprocess("testingdata")
